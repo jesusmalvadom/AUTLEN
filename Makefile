@@ -9,7 +9,7 @@ ALFABETO_DEPS =
 
 all: alfabeto
 
-all-test: alfabeto-test
+all-test: alfabeto-test 
 
 pre:
 	@mkdir $(OBJ_FOLDER)
