@@ -28,4 +28,28 @@ void alfabetoElimina(Alfabeto * p_alfabeto) {
 	free(p_alfabeto);
 }
 
+/**
+	Guarda en la colección de símbolos del alfabeto una copia en memoria nueva del argumento propocionado 
+*/
+Alfabeto * alfabetoInsertaSimbolo(Alfabeto * p_alfabeto, char * simbolo);
+
+/**
+	Imprime el alfabeto por el FILE * argumento
+*/
+void alfabetoImprime(FILE * fd, Alfabeto * p_alf);
+
+/**
+	Devuelve el símbolo que está en la posición pasada como argumento 
+	en el alfabeto proporcionado como argumento.
+	No se hace copia en memoria nueva, se devuelve un puntero a la cadena.
+*/
+char* alfabetoSimboloEn(Alfabeto * p_alf, int i);
+
+/**
+	Se devuelve la posición en la que está el alfabeto 
+*/
+int alfabetoIndiceDeSimbolo(Alfabeto * p_alf, char * simbolo);
+
+
+
 

@@ -12,6 +12,8 @@ typedef struct Estado{
     int tipo;
 } Estado;
 
+typedef int* VectorIndices;
+
 
 /**
  * Que reserva espacio para el Estado
@@ -32,6 +34,26 @@ Estado * estadoNuevo( char * nombre, int tipo){
 /**Que elimina todos los recursos asociados con el estado 
  * que se proporciona como argumento
 */
-void estadoElimina( Estado * p_s){
-	
-}
+void estadoElimina( Estado * p_s);
+
+void estadoImprime( FILE * fd, Estado * p_s);
+
+int estadoEs(Estado * p_s, char * nombre);
+
+char * estadoNombre(Estado * p_s);
+
+int estadoTipo(Estado * p_s);
+
+VectorIndices VectorIndicesNuevo(int tamano);
+
+void VectorIndicesElimina(VectorIndices vi);
+
+
+
+
+
+
+
+
+
+
