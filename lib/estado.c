@@ -1,18 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "estado.h"
-
-#define INICIAL 0
-#define FINAL   1
-#define INICIAL_Y_FINAL 2
-#define NORMAL 3
-
-typedef struct Estado{
-    char *nombre;
-    int tipo;
-} Estado;
-
-typedef int* VectorIndices;
 
 
 /**
@@ -21,7 +10,7 @@ Incluyendo una copia en memoria propia del nombre que se
 * proporciona como argumento.
 */
 Estado * estadoNuevo( char * nombre, int tipo){
-	if(!nombre || !tipo){
+	if(!nombre ){
 		fprintf(stderr, "Error en los parámetros de estadoNuevo\n");
 		return NULL;
 	}
@@ -38,7 +27,7 @@ Estado * estadoNuevo( char * nombre, int tipo){
  * que se proporciona como argumento
 */
 void estadoElimina( Estado * p_s){
-	if(!ps) return;
+	if(!p_s) return;
 	if(p_s->nombre){
 		free(p_s->nombre);
 		p_s->nombre=NULL;
@@ -56,17 +45,17 @@ void estadoImprime( FILE * fd, Estado * p_s){
 		return ;
 	}
 	switch (p_s->tipo){
-		case 0:
-			fprintf(fd, "->%s", p_s->nombre);
+		case INICIAL:
+			fprintf(fd, "->%s ", p_s->nombre);
 			break;
-		case 1:
-			fprintf(fd, "%s*", p_s->nombre);
+		case FINAL:
+			fprintf(fd, "%s* ", p_s->nombre);
 			break;
-		case 2:
-			fprintf(fd, "->%s*", p_s->nombre);
+		case INICIAL_Y_FINAL:
+			fprintf(fd, "->%s* ", p_s->nombre);
 			break;
 		default:
-			fprintf(fd, "%s", p_s->nombre);
+			fprintf(fd, "%s ", p_s->nombre);
 	} 
 	return;
 }
@@ -95,14 +84,56 @@ char * estadoNombre(Estado * p_s){
 int estadoTipo(Estado * p_s){
 	if(!p_s){
 		fprintf(stderr, "Error con el estado pasado en estadoTipo\n");
-		return NULL;
+		return -1;
 	}
 	return p_s->tipo;
 }
 
+/****************************************************************************/
+/****************************************************************************/
+/**************************** VectorIndices *********************************/
+/****************************************************************************/
+/****************************************************************************/
+
+VectorIndices VectorIndicesNuevo(int tamano) {
+	VectorIndices vi;
+	vi = (VectorIndices) malloc(sizeof(int) * tamano);
+	for (int i=0; i<tamano; i++) {
+		vi[i] = 0;
+	}
+	return vi;
+}
 
 
+void VectorIndicesElimina(VectorIndices vi) {
+	if (vi == NULL) return;
+	free(vi);
+	vi = NULL;
+}
 
+
+void VectorIndicesImprime(FILE *fd, VectorIndices vi, int tamano) {
+	if (fd == NULL || vi == NULL || tamano < 1) return;
+
+	for (int i=0; i<tamano; i++) {
+		fprintf(fd, "%d", vi[i]);
+	}
+	fprintf(fd, "\n");
+	return;
+}
+
+void VectorIndicesSetI(VectorIndices vi, int i) {
+	if (vi != NULL)	vi[i] = 1;
+}
+
+void VectorIndicesUnsetI(VectorIndices vi, int i) {
+	if (vi != NULL)	vi[i] = 0;
+}
+
+int VectorIndicesGetI(VectorIndices vi, int i) {
+	if (vi != NULL)	return vi[i];
+	return -1;
+}
 
 
 

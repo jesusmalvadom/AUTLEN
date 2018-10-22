@@ -1,19 +1,13 @@
+#ifndef AFND_H
+#define AFND_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+typedef struct _AFND * AFND;
 
-struct _AFND {
-	char * nombre;
-	Alfabeto * alfabeto;
-	int num_estados;
-	int num_simbolos;
-	
-	Estado ** estados;
-	Palabra * cadena_actual; 
-};
-
-AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos) {
-
-}
+AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
 
 void AFNDElimina(AFND * p_afnd);
 
@@ -35,3 +29,5 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd,
                             char * nombre_estado_f );
 
 AFND * AFNDInicializaCadenaActual (AFND * p_afnd );
+
+#endif

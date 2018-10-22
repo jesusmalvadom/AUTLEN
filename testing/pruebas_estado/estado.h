@@ -3,8 +3,8 @@
 #define ESTADO_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <malloc.h>
 
 #define INICIAL 0
 #define FINAL   1
@@ -16,8 +16,6 @@ typedef struct Estado{
     char *nombre;
     int tipo;
 } Estado;
-
-typedef int* VectorIndices;
 
 /**
  * reserva espacio para el Estado
@@ -50,32 +48,6 @@ char * estadoNombre(Estado * p_s);
 int estadoTipo(Estado * p_s);
 
 
-/****************************************************************************/
-/****************************************************************************/
-/**************************** VectorIndices *********************************/
-/****************************************************************************/
-/****************************************************************************/
 
-/**
-Dimensiona un vector de enteros de tamano posiciones.
-Lo devuelve
-*/
-VectorIndices VectorIndicesNuevo(int tamano);
-
-/** 
-Elimina el vector de indices pasado como argumento
-*/
-void VectorIndicesElimina(VectorIndices vi);
-
-/** 
-Imprime el vector de indices 
-*/
-void VectorIndicesImprime(FILE *fd, VectorIndices vi, int tamano);
-
-void VectorIndicesSetI(VectorIndices vi, int i);
-
-void VectorIndicesUnsetI(VectorIndices vi, int i);
-
-int VectorIndicesGetI(VectorIndices vi, int i);
 
 #endif

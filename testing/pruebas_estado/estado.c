@@ -1,8 +1,20 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "estado.h"
 
+
+
+/*typedef int* VectorIndices;*/
+
+
+/**
+ * Que reserva espacio para el Estado
+Incluyendo una copia en memoria propia del nombre que se 
+* proporciona como argumento.
+*/
 Estado * estadoNuevo( char * nombre, int tipo){
-	if(!nombre || !tipo){
+	if(!nombre ){
 		fprintf(stderr, "Error en los parámetros de estadoNuevo\n");
 		return NULL;
 	}
@@ -11,10 +23,15 @@ Estado * estadoNuevo( char * nombre, int tipo){
 	strcpy(e->nombre, nombre);
 	e->tipo = tipo;
 	return e;
+	
 }
 
+
+/**Que elimina todos los recursos asociados con el estado 
+ * que se proporciona como argumento
+*/
 void estadoElimina( Estado * p_s){
-	if(!ps) return;
+	if(!p_s) return;
 	if(p_s->nombre){
 		free(p_s->nombre);
 		p_s->nombre=NULL;
@@ -24,6 +41,7 @@ void estadoElimina( Estado * p_s){
 	return ;
 }
 
+/*Que muestra por el FILE * fd el estado proporcionado como argumento*/
 void estadoImprime( FILE * fd, Estado * p_s){
 	char * imp=NULL;
 	if(!fd || !p_s){
@@ -46,7 +64,8 @@ void estadoImprime( FILE * fd, Estado * p_s){
 	return;
 }
 
-int estadoEs( Estado * p_s, char * nombre){
+/*Que devuelve 1 si el estado argumento tiene el nombre argumento*/
+int estadoEs(Estado * p_s, char * nombre){
 	if(!p_s || !nombre){
 		fprintf(stderr, "Error en los parámetros de estadoEs\n");
 		return 0;
@@ -55,6 +74,8 @@ int estadoEs( Estado * p_s, char * nombre){
 	return 0;
 }
 
+/*devuelve un puntero (no una copia en memoria nueva) 
+del nombre del estado argumento*/
 char * estadoNombre(Estado * p_s){
 	if(!p_s){
 		fprintf(stderr, "Error con el estado pasado en estadoNombre\n");
@@ -63,27 +84,22 @@ char * estadoNombre(Estado * p_s){
 	return p_s->nombre;
 }
 
+/*devuelve el tipo del estado argumento */
 int estadoTipo(Estado * p_s){
 	if(!p_s){
 		fprintf(stderr, "Error con el estado pasado en estadoTipo\n");
-		return NULL;
+		return -1;
 	}
 	return p_s->tipo;
 }
 
-int estadoCompara(Estado * p_s1, Estado * p_s2){
-	if(!p_s1 || !p_s2){
-		fprintf(stderr, "Error con los estados pasados en estadoCompara\n");
-		return -1;
-	}
-	return strcmp(p_s1->nombre, p_s2->nombre);
-}
 
-Estado * estado_copy(Estado * p_s){
-	if(!p_s){
-		fprintf(stderr, "Error con el estado pasado en estado_copy\n");
-		return NULL;
-	}
-	return estadoNuevo(p_s->nombre, p_s->tipo;
-}
+
+
+
+
+
+
+
+
 

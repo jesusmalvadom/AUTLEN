@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_LEN_SIMBOLO 50
+#define MAX_LEN_SIMBOLO 100
 
 typedef struct Simbolos{
     char *nombre;
