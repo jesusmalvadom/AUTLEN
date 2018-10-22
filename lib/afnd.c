@@ -1,6 +1,5 @@
 
 
-
 struct _AFND {
 	char * nombre;
 	Alfabeto * alfabeto;
@@ -35,3 +34,14 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd,
                             char * nombre_estado_f );
 
 AFND * AFNDInicializaCadenaActual (AFND * p_afnd );
+
+
+void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd);
+
+void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd);
+
+AFND * AFNDInicializaEstado (AFND * p_afnd);
+
+void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd);
+
+void AFNDTransita(AFND * p_afnd);
