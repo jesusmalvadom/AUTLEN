@@ -24,7 +24,7 @@ typedef int* VectorIndices;
 Incluyendo una copia en memoria propia del nombre que se 
 * proporciona como argumento.
 */
-Estado * estadoNuevo( char * nombre, int tipo);
+Estado * estadoNuevo(char *nombre, int tipo);
 
 
 /**elimina todos los recursos asociados con el estado 

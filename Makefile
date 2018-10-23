@@ -17,9 +17,12 @@ PALABRA_DEPS =
 VECTOR = vector
 VECTOR_DEPS = 
 
-all: alfabeto estado palabra
+AFND = afnd
+AFND_DEPS = 
 
-all-test: alfabeto-test estado-test vector-test palabra-test
+all: alfabeto estado palabra afnd
+
+all-test: alfabeto-test estado-test vector-test palabra-test afnd-test
 
 pre:
 	@mkdir $(OBJ_FOLDER)
@@ -36,6 +39,12 @@ palabra:
 	@echo Compilando modulo de palabra...
 	@$(CC) -c $(LIBRARIES)$(PALABRA).c -o $(OBJ_FOLDER)$(PALABRA).o
 
+afnd.o: $(LIBRARIES)alfabeto.c $(LIBRARIES)estado.c $(LIBRARIES)palabra.c $(LIBRARIES)alfabeto.h $(LIBRARIES)estado.h $(LIBRARIES)palabra.h
+	@echo Compilando modulo del AFND...
+	@$(CC) -c $(LIBRARIES)$(AFND).c
+
+
+
 alfabeto-test: alfabeto
 	@echo Compilando tester del modulo del alfabeto...
 	@$(CC) -o pruebas_$(ALFABETO) $(OBJ_FOLDER)$(ALFABETO).o $(LIBRARIES)$(ALFABETO)-test.c
@@ -51,6 +60,10 @@ palabra-test: palabra
 vector-test: estado
 	@echo Compilando tester del modulo de vector...
 	@$(CC) -o pruebas_$(VECTOR) $(OBJ_FOLDER)$(ESTADO).o $(LIBRARIES)$(VECTOR)-test.c
+
+afnd-test: afnd
+	@echo Compilando tester del modulo del AFND...
+	@$(CC) -o pruebas_$(AFND) $(OBJ_FOLDER)$(AFND).o $(LIBRARIES)$(AFND)-test.c
 
 
 .PHONY : clean all
