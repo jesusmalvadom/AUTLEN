@@ -6,7 +6,7 @@
 Palabra * palabraNueva(){
 
 	Palabra * p = (Palabra *) malloc (sizeof(Palabra));
-	p->letra = (char **) malloc(sizeof(char*));
+	p->letra = NULL;
 	
 	p->tamanyo = 0;
 	return p;
@@ -14,16 +14,16 @@ Palabra * palabraNueva(){
 
 /*libera todos los recursos de la Palabra */
 void palabraElimina(Palabra * p_p){
-
-	if(!p_p) return;
-	
-	for (int i = p_p->tamanyo; i > 0; i--) {
-		free(p_p->letra[i]);
+	int i;
+	if(p_p) {
+		if(p_p->letra) {
+			for(i=0; i<p_p->tamanyo; i++){
+				if(p_p->letra[i]) free(p_p->letra[i]);
+			}
+			free(p_p->letra);
+		}
+		if(p_p!=NULL) free(p_p);
 	}
-	free(p_p->letra);
-	free(p_p);
-	p_p=NULL;
-	return ;
 }
 
 
@@ -32,16 +32,12 @@ Redimensiona si es necesario la colección de letras de la Palabra argumento
 Incluye la nueva letra al principio de la palabra
 */
 Palabra * palabraInsertaLetra(Palabra * p_p, char * letra){
-	/*Casos de error*/
-	if(!p_p) return NULL;
-
-	/*Reservar memoria p_p->letra*/
-	p_p->letra = realloc(p_p->letra, sizeof(p_p->letra[0]) * p_p->tamanyo+1);
-	++p_p->tamanyo;
-
-    p_p->letra[p_p->tamanyo-1] = (char *) malloc(sizeof(char*) * MAX_LEN_LETRA);
-    p_p->letra[p_p->tamanyo-1] = strcpy(p_p->letra[p_p->tamanyo-1], letra);
-
+	if(p_p && letra) {
+		p_p->tamanyo++;
+		p_p->letra = realloc(p_p->letra, sizeof(char*)*(p_p->tamanyo));
+		p_p->letra[p_p->tamanyo-1] = (char *) malloc(strlen(letra)*sizeof(char));
+		strcpy(p_p->letra[p_p->tamanyo-1], letra);
+	}
 	return p_p;
 
 }
@@ -52,10 +48,6 @@ void palabraImprime(FILE * fd, Palabra * p_p){
 	if(!fd || !p_p){
 		fprintf(stderr, "Error en los parámetros de palabraImprime\n");
 		return;
-	}
-	if(!p_p->letra){
-		fprintf(stderr, "Error: Palabra NULL\n");
-		return ;
 	}
 
 	fprintf(fd, "[(%d) ", p_p->tamanyo);
@@ -91,7 +83,8 @@ char * palabraQuitaInicio(Palabra * p_p){
 
 /*Devuelve el número de letras de la palabra*/
 int palabraTamano(Palabra * p_p){
-	if(!p_p) return -1;
-	return p_p->tamanyo;
+	if(p_p) {
+		return p_p->tamanyo;
+	} return -2;
 }
 

@@ -6,44 +6,55 @@
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos) {
 	AFND *p_afnd = NULL;
 	if (nombre[0] == '\0' || num_estados < 0 || num_simbolos < 0) return NULL;
+	
+	p_afnd = (AFND *) malloc(sizeof(AFND));
 
-	p_afnd = (AFND *) malloc(sizeof(char) * MAX_LEN_NOMBRE);
-	strcpy(p_afnd->nombre, nombre);
+	p_afnd->nombre = strdup(nombre);
 
 	p_afnd->num_estados = num_estados;
 	p_afnd->num_simbolos = num_simbolos;
 
 	char nombre_alfabeto[MAX_LEN_NOMBRE];
 	sprintf(nombre_alfabeto, "alf_%s", nombre);
+
 	p_afnd->alfabeto = alfabetoNuevo(nombre_alfabeto, num_simbolos);
+
 	if (p_afnd->alfabeto == NULL) return NULL;
 
-	p_afnd->estados = (Estado **) malloc(sizeof(Estado) * num_estados);
+	p_afnd->estados = (Estado **) malloc(sizeof(Estado *) * num_estados);
 	if (p_afnd->estados == NULL) return NULL;
 
 	p_afnd->cadena_actual = palabraNueva();
 	if (p_afnd->cadena_actual == NULL) return NULL;
-
-
 
 	return p_afnd;
 }
 
 void AFNDElimina(AFND * p_afnd) {
 	if (p_afnd == NULL) return;
-
+	printf("HOLA1\n");
+	fflush(stdout);
 	free(p_afnd->nombre);
+	printf("HOLA2\n");
+	fflush(stdout);
 
 	alfabetoElimina(p_afnd->alfabeto);
+	printf("HOLA3\n");
+	fflush(stdout);
 
 	for (int i = 0; i < p_afnd->num_estados; i++) {
-		estadoElimina(p_afnd->estados[i]);
+		printf("HOLA4_%d\n", i);
+		fflush(stdout);
+		if (p_afnd->estados[i] != NULL) estadoElimina(p_afnd->estados[i]);
 	}
-	
+	printf("HOLA5\n");
+	fflush(stdout);
 	free(p_afnd->estados);
-
+	printf("HOLA6\n");
+	fflush(stdout);
 	palabraElimina(p_afnd->cadena_actual);
-
+	printf("HOLA7\n");
+	fflush(stdout);
 	return;
 }
 

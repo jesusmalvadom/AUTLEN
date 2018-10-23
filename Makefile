@@ -39,9 +39,11 @@ palabra:
 	@echo Compilando modulo de palabra...
 	@$(CC) -c $(LIBRARIES)$(PALABRA).c -o $(OBJ_FOLDER)$(PALABRA).o
 
-afnd.o: $(LIBRARIES)alfabeto.c $(LIBRARIES)estado.c $(LIBRARIES)palabra.c $(LIBRARIES)alfabeto.h $(LIBRARIES)estado.h $(LIBRARIES)palabra.h
+afnd:
 	@echo Compilando modulo del AFND...
-	@$(CC) -c $(LIBRARIES)$(AFND).c
+	@$(CC) -c $(LIBRARIES)afnd.c -o $(OBJ_FOLDER)afnd.o
+	@ar cr $(OBJ_FOLDER)afnd.a $(OBJ_FOLDER)palabra.o $(OBJ_FOLDER)estado.o $(OBJ_FOLDER)alfabeto.o $(OBJ_FOLDER)afnd.o
+	
 
 
 
@@ -63,7 +65,7 @@ vector-test: estado
 
 afnd-test: afnd
 	@echo Compilando tester del modulo del AFND...
-	@$(CC) -o pruebas_$(AFND) $(OBJ_FOLDER)$(AFND).o $(LIBRARIES)$(AFND)-test.c
+	@$(CC) -o pruebas_$(AFND) $(LIBRARIES)$(AFND)-test.c $(OBJ_FOLDER)$(AFND).a
 
 
 .PHONY : clean all
