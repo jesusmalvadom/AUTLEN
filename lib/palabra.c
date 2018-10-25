@@ -22,7 +22,7 @@ void palabraElimina(Palabra * p_p){
 			}
 			free(p_p->letra);
 		}
-		if(p_p!=NULL) free(p_p);
+		free(p_p);
 	}
 }
 
@@ -35,7 +35,7 @@ Palabra * palabraInsertaLetra(Palabra * p_p, char * letra){
 	if(p_p && letra) {
 		p_p->tamanyo++;
 		p_p->letra = realloc(p_p->letra, sizeof(char*)*(p_p->tamanyo));
-		p_p->letra[p_p->tamanyo-1] = (char *) malloc(strlen(letra)*sizeof(char));
+		p_p->letra[p_p->tamanyo-1] = (char *) calloc(strlen(letra)+1,sizeof(char));
 		strcpy(p_p->letra[p_p->tamanyo-1], letra);
 	}
 	return p_p;
@@ -63,7 +63,7 @@ void palabraImprime(FILE * fd, Palabra * p_p){
 Eliminándola de ella
 */
 char * palabraQuitaInicio(Palabra * p_p){
-	void * aux;
+	char * aux;
 	
 	/*Casos de error*/
 	if(!p_p) return NULL;
@@ -71,13 +71,19 @@ char * palabraQuitaInicio(Palabra * p_p){
 		return NULL;
 	} 
 
+
+	/// Por aqui pierde creo
+	
 	aux = (char *) malloc(sizeof(p_p->letra[0]));
 	strcpy(aux, p_p->letra[0]);
+
 	
 	p_p->tamanyo--;
-	memmove(p_p->letra, p_p->letra+1, p_p->tamanyo * sizeof(p_p->letra[0]));
-	p_p->letra = realloc(p_p->letra, sizeof(p_p->letra[0]) * p_p->tamanyo);
-	
+	memmove(p_p->letra, p_p->letra+1, p_p->tamanyo * sizeof(char*));
+
+	p_p->letra = realloc(p_p->letra, sizeof(char*) * p_p->tamanyo);
+
+
 	return aux;
 }
 

@@ -1,4 +1,4 @@
-CC = gcc
+CC = gcc -g
 
 LIBRARIES = lib/
 OBJ_FOLDER = $(LIBRARIES)obj/
@@ -20,12 +20,14 @@ VECTOR_DEPS =
 AFND = afnd
 AFND_DEPS = 
 
-all: alfabeto estado palabra afnd
 
-all-test: alfabeto-test estado-test vector-test palabra-test afnd-test
+
+all: pre alfabeto estado palabra afnd
+
+all-test: pre alfabeto-test estado-test vector-test palabra-test afnd-test
 
 pre:
-	@mkdir $(OBJ_FOLDER)
+	@mkdir -p $(OBJ_FOLDER)
 
 alfabeto:
 	@echo Compilando modulo de alfabeto...
@@ -74,12 +76,7 @@ clean :
 	@rm -rf $(TESTING)pruebas_$(ESTADO)/*.o
 	@rm -rf $(TESTING)pruebas_$(PALABRA)/*.o
 	@rm -rf $(OBJ_FOLDER)
-
-
-
-
-
-
+	@rm -rf pruebas_*
 
 
 
