@@ -14,6 +14,7 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos) {
 	p_afnd->nombre = strdup(nombre);
 
 	p_afnd->num_estados = num_estados;
+	p_afnd->num_estados_activos = 0;
 	p_afnd->num_simbolos = num_simbolos;
 
 	p_afnd->alfabeto = alfabetoNuevo("A", num_simbolos);
@@ -22,6 +23,8 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos) {
 
 	p_afnd->estados = (Estado **) malloc(sizeof(Estado *) * num_estados);
 	if (p_afnd->estados == NULL) return NULL;
+
+	p_afnd->estados_activos = (Estado **) malloc(sizeof(Estado *) * num_estados);
 
 	p_afnd->cadena_actual = palabraNueva();
 	if (p_afnd->cadena_actual == NULL) return NULL;
@@ -44,16 +47,36 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos) {
 /*Libera adecuadamente todos los recursos
  asociados con un autómata finito no determinista.*/
 void AFNDElimina(AFND * p_afnd) {
+	// Nombre
 	if (p_afnd == NULL) return;
 	free(p_afnd->nombre);
 
+	// Alfabeto
 	alfabetoElimina(p_afnd->alfabeto);
 
+	// Lista de Estados
 	for (int i = 0; i < p_afnd->num_estados; i++) {
 		if (p_afnd->estados[i] != NULL) estadoElimina(p_afnd->estados[i]);
 	}
 	free(p_afnd->estados);
+
+	// Lista de Estados Activos
+	for (int i = 0; i < p_afnd->num_estados_activos; i++) {
+		if (p_afnd->estados_activos[i] != NULL) estadoElimina(p_afnd->estados_activos[i]);
+	}
+	free(p_afnd->estados_activos);
+
+	// Cadena Actual
 	palabraElimina(p_afnd->cadena_actual);
+
+	// Transiciones
+	for (int i = 0; i < p_afnd->num_estados; i++) {
+		for(int j = 0; j < p_afnd->num_simbolos; j++) {
+			if (p_afnd->transiciones[i][j] != NULL) VectorIndicesElimina(p_afnd->transiciones[i][j]);
+		}
+	}
+	free(p_afnd->transiciones);
+
 	return;
 }
 
@@ -70,7 +93,7 @@ void AFNDImprime(FILE * fd, AFND* p_afnd) {
 	for (int i = 0; i<p_afnd->num_estados; i++) {
 		estadoImprime(fd, p_afnd->estados[i]);
 	}
-	fprintf(fd, "}\n");
+	fprintf(fd, "}\n\n");
 	fprintf(fd, "\tFuncion de Transición = { \n");
 	for(int i=0; i<p_afnd->num_estados; i++) {
 		for (int j=0; j<p_afnd->num_simbolos; j++) {
@@ -184,10 +207,10 @@ void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd) {
 		return;
 	}
 
-	fprintf(fd, "\nACTUALMENTE EN {->");
-	for(i = 0; i < p_afnd->num_estados; i++){
-		if(p_afnd->estados[i] != NULL){
-			estadoImprime(fd, p_afnd->estados[i]);
+	fprintf(fd, "\nACTUALMENTE EN {");
+	for(i = 0; i < p_afnd->num_estados_activos; i++){
+		if(p_afnd->estados_activos[i] != NULL){
+			estadoImprime(fd, p_afnd->estados_activos[i]);
 		}
 	}
 	fprintf(fd, "}\n");
@@ -212,11 +235,15 @@ AFND * AFNDInicializaEstado (AFND * p_afnd) {
 	int i, j;
 	if(!p_afnd || !p_afnd->estados) return NULL;
 
+	for (i=0; i<p_afnd->num_estados_activos; i++) estadoElimina(p_afnd->estados_activos[i]);
+
 	for(i=0; i<p_afnd->num_estados; i++){
 		if(p_afnd->estados[i]->tipo==INICIAL){
-			p_afnd->nombre[i]=1;
+			p_afnd->estados_activos[0] = estadoNuevo(p_afnd->estados[i]->nombre, p_afnd->estados[i]->tipo);
 		}
 	}
+
+	p_afnd->num_estados_activos = 1;
 	return p_afnd;
 }
 
@@ -224,7 +251,51 @@ AFND * AFNDInicializaEstado (AFND * p_afnd) {
 análisis de la cadena guardada como cadena actual.
 */
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd) {
-	return;
+	
+	if (p_afnd == NULL) return;
+	int tamanoCadena = p_afnd->cadena_actual->tamanyo;
+	int indexEstadoActual;
+	int indexSimboloActual;
+	Estado **l_estados_aux;
+	char *letraInicial;
+	int l_estados_aux_tamano = 0;
+
+	
+	/* Iteramos por los simbolos de la cadena de entrada */
+	for (int i=0; i<tamanoCadena; i++) {
+
+		AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+		AFNDImprimeCadenaActual(fd, p_afnd);		
+
+		indexSimboloActual = alfabetoIndiceDeSimbolo(p_afnd->alfabeto, p_afnd->cadena_actual->letra[0]);
+		l_estados_aux = (Estado **) malloc(sizeof(Estado *) * p_afnd->num_estados);
+
+		/* Iteramos por los estados activos */
+		for (int j=0; j<p_afnd->num_estados_activos; j++) {
+			
+			indexEstadoActual = AFNDGetEstadoIndice(p_afnd, p_afnd->estados_activos[j]->nombre);
+			
+			/* Iteramos por los vectores de indices */
+			for (int k=0; k<p_afnd->num_estados; k++) {
+				
+				if (p_afnd->transiciones[indexEstadoActual][indexSimboloActual][k] == 1) {
+					l_estados_aux[l_estados_aux_tamano] = estadoNuevo(p_afnd->estados[k]->nombre, p_afnd->estados[k]->tipo);
+					l_estados_aux_tamano++;
+				}
+			}
+		}
+
+		memcpy(&p_afnd->estados_activos, &l_estados_aux, sizeof(l_estados_aux));
+		p_afnd->num_estados_activos = l_estados_aux_tamano;
+		l_estados_aux_tamano = 0;
+
+		AFNDTransita(p_afnd);
+		
+	}
+
+	AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+	AFNDImprimeCadenaActual(fd, p_afnd);
+
 }
 
 /*Esta función debe realizar sólo un
@@ -232,6 +303,7 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd) {
  (el correspondiente al siguiente 
  símbolo, es decir, al primero de la cadena).*/
 void AFNDTransita(AFND * p_afnd) {
+	palabraQuitaInicio(p_afnd->cadena_actual);
 	return;
 }
 
@@ -239,6 +311,7 @@ void AFNDTransita(AFND * p_afnd) {
 int AFNDGetEstadoIndice(AFND * p_afnd, char* nombre_estado) {
 	if (p_afnd && nombre_estado) {
 		for (int i = 0; i<p_afnd->num_estados; i++) {
+			//printf("\nESTADO 1: %s\tESTADO 2: %s\n\n", p_afnd->estados[i]->nombre, nombre_estado);
 			if (estadoEs(p_afnd->estados[i], nombre_estado))
 				return i;
 		} 

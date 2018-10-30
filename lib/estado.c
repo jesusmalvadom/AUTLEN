@@ -27,23 +27,15 @@ Estado * estadoNuevo( char * nombre, int tipo){
  * que se proporciona como argumento
 */
 void estadoElimina(Estado * p_s){
-	printf("HOLA4____-1\n");
-	fflush(stdout);
+	
 	if(p_s == NULL) return;
 
-	printf("HOLA4____0\n");
-	fflush(stdout);
 	if(p_s->nombre){
-		printf("HOLA4____1\n");
-		fflush(stdout);
 		free(p_s->nombre);
 		p_s->nombre=NULL;
 	}
-	printf("HOLA4____2\n");
-	fflush(stdout);
 	free(p_s);
-	printf("HOLA4____3\n");
-	fflush(stdout);
+
 	return ;
 }
 

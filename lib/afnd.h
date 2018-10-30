@@ -15,9 +15,12 @@ typedef struct AFND {
 	char * nombre;
 	Alfabeto * alfabeto;
 	int num_estados;
+	int num_estados_activos;
 	int num_simbolos;
 	
 	Estado ** estados;
+	Estado **estados_activos;
+	VectorIndices **transiciones;
 	Palabra * cadena_actual; 
 }AFND;
 
@@ -50,5 +53,7 @@ AFND * AFNDInicializaEstado (AFND * p_afnd);
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd);
 
 void AFNDTransita(AFND * p_afnd);
+
+int AFNDGetEstadoIndice(AFND * p_afnd, char* nombre_estado);
 
 #endif

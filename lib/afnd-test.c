@@ -84,7 +84,7 @@ int main(int argc, char ** argv)
 
 /* SE ESTABLECE COMO ESTADO ACTUAL DEL AUTÓMATA EL INICIAL */
 
-    AFNDInicializaEstado (p_afnd);
+    AFNDInicializaEstado(p_afnd);
 
 /* SE MUESTRA LA CADENA ACTUAL */
 
