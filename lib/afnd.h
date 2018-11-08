@@ -21,12 +21,17 @@ typedef struct AFND {
 	Estado ** estados;
 	Estado **estados_activos;
 	VectorIndices **transiciones;
+	int ** matriz_ltransiciones;
 	Palabra * cadena_actual; 
+
+
 }AFND;
 
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
 
 void AFNDElimina(AFND * p_afnd);
+
+void ImprimeMatriz(FILE* fd, int ** matriz, int size);
 
 void AFNDImprime(FILE * fd, AFND* p_afnd);
 
@@ -56,4 +61,8 @@ void AFNDTransita(AFND * p_afnd);
 
 int AFNDGetEstadoIndice(AFND * p_afnd, char* nombre_estado);
 
+
+AFND * AFNDInsertaLTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombre_estado_f );
+
+AFND * AFNDCierraLTransicion (AFND * p_afnd);
 #endif
