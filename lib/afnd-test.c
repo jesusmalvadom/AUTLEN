@@ -45,8 +45,6 @@ int main(int argc, char ** argv)
     AFNDInsertaLTransicion(p_afnd_l, "q1", "q2");
     AFNDInsertaLTransicion(p_afnd_l, "q4", "q2");
 
-    
-
     AFNDCierraLTransicion(p_afnd_l);
 
     AFNDImprime(stdout,p_afnd_l);
@@ -57,7 +55,6 @@ int main(int argc, char ** argv)
     AFNDInsertaLetra(p_afnd_l,"1");
     AFNDInsertaLetra(p_afnd_l,"0");
     AFNDInsertaLetra(p_afnd_l,"0");
-
 
     p_afnd_l = AFNDInicializaEstado(p_afnd_l);
 
@@ -78,7 +75,7 @@ int main(int argc, char ** argv)
     AFNDInsertaLetra(p_afnd_l,"0");
     AFNDInsertaLetra(p_afnd_l,"0");
 
-    //p_afnd_l = AFNDInicializaEstado(p_afnd_l);
+    p_afnd_l = AFNDInicializaEstado(p_afnd_l);
 
     fprintf(stdout,"\n**************** PROCESA CADENA *************\n");
     AFNDProcesaEntrada(stdout,p_afnd_l);
@@ -94,7 +91,7 @@ int main(int argc, char ** argv)
     AFNDInsertaLetra(p_afnd_l,"0");
     AFNDInsertaLetra(p_afnd_l,"0");
 
-    //p_afnd_l = AFNDInicializaEstado(p_afnd_l);
+    p_afnd_l = AFNDInicializaEstado(p_afnd_l);
 
     fprintf(stdout,"\n**************** PROCESA CADENA *************\n");
     AFNDProcesaEntrada(stdout,p_afnd_l);
@@ -113,7 +110,7 @@ int main(int argc, char ** argv)
     AFNDInsertaLetra(p_afnd_l,"0");
     AFNDInsertaLetra(p_afnd_l,"1");
 
-    //p_afnd_l = AFNDInicializaEstado(p_afnd_l);
+    p_afnd_l = AFNDInicializaEstado(p_afnd_l);
 
     fprintf(stdout,"\n**************** PROCESA CADENA *************\n");
     AFNDProcesaEntrada(stdout,p_afnd_l);

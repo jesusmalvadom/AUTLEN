@@ -18,11 +18,16 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos) {
 	p_afnd->num_estados_activos = 0;
 
 
-
 	p_afnd->estados = (Estado **) malloc(sizeof(Estado *) * num_estados);
 	if (p_afnd->estados == NULL) return NULL;
 
+
 	p_afnd->estados_activos = (Estado **) malloc(sizeof(Estado *) * num_estados);
+	for (int i = 0; i < num_estados; i++) {
+		p_afnd->estados_activos[i] = (Estado *) malloc (sizeof(Estado));
+		p_afnd->estados_activos[i]->nombre = NULL;
+	}
+
 
 	p_afnd->cadena_actual = palabraNueva();
 	if (p_afnd->cadena_actual == NULL) return NULL;
@@ -242,7 +247,7 @@ AFND * AFNDInicializaCadenaActual (AFND * p_afnd ) {
 	if(!p_afnd)return NULL;
 	palabraElimina(p_afnd->cadena_actual);
 	p_afnd->cadena_actual=palabraNueva();
-	p_afnd->contador_estados_actuales = 0;
+	return p_afnd;
 }
 
 
@@ -282,12 +287,10 @@ AFND * AFNDInicializaEstado (AFND * p_afnd) {
 	int i, j;
 	if(!p_afnd || !p_afnd->estados) return NULL;
 
-	for (i = 0; i < p_afnd->num_estados; i++){
-		strcpy(p_afnd->estados_activos[0]->nombre, p_afnd->estados[i]->nombre);
-		p_afnd->estados_activos[0]->tipo = p_afnd->estados[i]->tipo;
-		p_afnd->num_estados_activos++;
-		return p_afnd;
-	}
+	p_afnd->estados_activos[0]->nombre = strdup(p_afnd->estados[0]->nombre);
+	p_afnd->estados_activos[0]->tipo = p_afnd->estados[0]->tipo;
+	p_afnd->num_estados_activos = 1;
+	return p_afnd;
 
 }
 
@@ -302,19 +305,49 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd) {
 	int tamanoCadena = p_afnd->cadena_actual->tamanyo;
 	int indexEstadoActual;
 	int indexSimboloActual;
-	Estado **l_estados_aux;
+	Estado **l_estados_aux = NULL;
 	char *letraInicial;
 	int l_estados_aux_tamano = 0;
 
 	
 	/* Iteramos por los simbolos de la cadena de entrada */
 	for (int i=0; i<tamanoCadena; i++) {
+		if (p_afnd->num_estados_activos == 0) break;
+		
 
-		AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
-		AFNDImprimeCadenaActual(fd, p_afnd);		
+		/* Anyadimos a la lista de estados activos aquellos con los que hay lambdas */
+		/* Iteramos por los estados activos */
+		l_estados_aux = (Estado **) malloc(sizeof(Estado *) * p_afnd->num_estados);
+		l_estados_aux_tamano = 0;
+
+		for (int j=0; j < p_afnd->num_estados_activos; j++) {
+
+			indexEstadoActual = AFNDGetEstadoIndice(p_afnd, p_afnd->estados_activos[j]->nombre);
+
+			/* Iteramos por el vector de indices lambda */
+			for (int k=0; k<p_afnd->num_estados; k++) {
+				if (p_afnd->matriz_ltransiciones[indexEstadoActual][k] == 1) {
+
+					l_estados_aux[l_estados_aux_tamano] = estadoNuevo(p_afnd->estados[k]->nombre, p_afnd->estados[k]->tipo);
+					l_estados_aux_tamano++;
+				}
+			}
+		}
+
+		/* Copiamos la lista auxiliar de estados en la lista de estados activos (lambdas anyadidos) */
+		memcpy(&p_afnd->estados_activos, &l_estados_aux, sizeof(l_estados_aux));
+		p_afnd->num_estados_activos = l_estados_aux_tamano;
+
+
+		//printf ("\ni: %d/%d\tNUM_ESTADOS_ACTIVOS: %d", i, tamanoCadena, p_afnd->num_estados_activos);
+		AFNDImprimeConjuntoEstadosActual(fd, p_afnd);	
+		AFNDImprimeCadenaActual(fd, p_afnd);	
+
+
 
 		indexSimboloActual = alfabetoIndiceDeSimbolo(p_afnd->alfabeto, p_afnd->cadena_actual->letra[0]);
 		l_estados_aux = (Estado **) malloc(sizeof(Estado *) * p_afnd->num_estados);
+		l_estados_aux_tamano = 0;
 
 		/* Iteramos por los estados activos */
 		for (int j=0; j<p_afnd->num_estados_activos; j++) {
@@ -328,7 +361,7 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd) {
 					l_estados_aux[l_estados_aux_tamano] = estadoNuevo(p_afnd->estados[k]->nombre, p_afnd->estados[k]->tipo);
 					l_estados_aux_tamano++;
 				}
-			}
+			}	
 		}
 
 		memcpy(&p_afnd->estados_activos, &l_estados_aux, sizeof(l_estados_aux));
@@ -339,6 +372,33 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd) {
 		
 	}
 
+	
+	/********* Volvemos a anyadir por ultima vez los lambdas  ******/
+	/* Iteramos por los estados activos */
+	l_estados_aux = (Estado **) malloc(sizeof(Estado *) * p_afnd->num_estados);
+	l_estados_aux_tamano = 0;
+
+	for (int j=0; j < p_afnd->num_estados_activos; j++) {
+
+		indexEstadoActual = AFNDGetEstadoIndice(p_afnd, p_afnd->estados_activos[j]->nombre);
+
+		/* Iteramos por el vector de indices lambda */
+		for (int k=0; k<p_afnd->num_estados; k++) {
+			if (p_afnd->matriz_ltransiciones[indexEstadoActual][k] == 1) {
+
+				l_estados_aux[l_estados_aux_tamano] = estadoNuevo(p_afnd->estados[k]->nombre, p_afnd->estados[k]->tipo);
+				l_estados_aux_tamano++;
+			}
+		}
+	}
+
+	/* Copiamos la lista auxiliar de estados en la lista de estados activos (lambdas anyadidos) */
+	memcpy(&p_afnd->estados_activos, &l_estados_aux, sizeof(l_estados_aux));
+	p_afnd->num_estados_activos = l_estados_aux_tamano;
+
+	/****************************************************************/
+
+	//printf ("\ni: %d/%d\tNUM_ESTADOS_ACTIVOS: %d", tamanoCadena, tamanoCadena, p_afnd->num_estados_activos);
 	AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
 	AFNDImprimeCadenaActual(fd, p_afnd);
 
