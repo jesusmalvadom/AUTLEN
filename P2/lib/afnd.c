@@ -315,7 +315,6 @@ AFND * AFNDInicializaEstado (AFND * p_afnd) {
 
 }
 
-
 /*Desencadena el proceso completo de 
 análisis de la cadena guardada como cadena actual.
 */
