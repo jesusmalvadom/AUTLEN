@@ -34,8 +34,9 @@ Incluye la nueva letra al principio de la palabra
 Palabra * palabraInsertaLetra(Palabra * p_p, char * letra){
 	if(p_p && letra) {
 		p_p->tamanyo++;
+
 		p_p->letra = realloc(p_p->letra, sizeof(char*)*(p_p->tamanyo));
-		p_p->letra[p_p->tamanyo-1] = (char *) calloc(strlen(letra)+1,sizeof(char));
+		p_p->letra[p_p->tamanyo-1] = (char *) malloc((strlen(letra)+1) * sizeof(char));
 		strcpy(p_p->letra[p_p->tamanyo-1], letra);
 	}
 	return p_p;
@@ -63,28 +64,22 @@ void palabraImprime(FILE * fd, Palabra * p_p){
 Eliminándola de ella
 */
 char * palabraQuitaInicio(Palabra * p_p){
-	char * aux;
-	
+	char ** aux;
+
 	/*Casos de error*/
 	if(!p_p) return NULL;
 	if(!p_p->letra){
 		return NULL;
 	} 
 
-
-	/// Por aqui pierde creo
-	
-	aux = (char *) malloc(sizeof(p_p->letra[0]));
-	strcpy(aux, p_p->letra[0]);
-
-	
 	p_p->tamanyo--;
-	memmove(p_p->letra, p_p->letra+1, p_p->tamanyo * sizeof(char*));
+	free(p_p->letra[0]);
+	for (int i=0; i<p_p->tamanyo; i++) {
+		p_p->letra[i] = p_p->letra[i+1];
+	}
 
-	p_p->letra = realloc(p_p->letra, sizeof(char*) * p_p->tamanyo);
-
-
-	return aux;
+	// No se usa para nada
+	return NULL;
 }
 
 /*Devuelve el número de letras de la palabra*/

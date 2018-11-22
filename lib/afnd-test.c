@@ -49,6 +49,9 @@ int main(int argc, char ** argv)
 
     AFNDImprime(stdout,p_afnd_l);
 
+
+/*********************************************************************************/
+    
     AFNDInsertaLetra(p_afnd_l,"1");
     AFNDInsertaLetra(p_afnd_l,"1");
     AFNDInsertaLetra(p_afnd_l,"1");
@@ -100,6 +103,7 @@ int main(int argc, char ** argv)
 
 /*********************************************************************************/
 
+
     p_afnd_l = AFNDInicializaCadenaActual(p_afnd_l);
     AFNDInsertaLetra(p_afnd_l,"0");
     AFNDInsertaLetra(p_afnd_l,"1");
@@ -117,11 +121,10 @@ int main(int argc, char ** argv)
     fprintf(stdout,"\n*********************************************\n");
 
 
+
+
+
 /*********************************************************************************/
-
-
-
-
 
     AFNDElimina(p_afnd_l);
 

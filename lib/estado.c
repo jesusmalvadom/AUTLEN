@@ -9,17 +9,18 @@
 Incluyendo una copia en memoria propia del nombre que se 
 * proporciona como argumento.
 */
-Estado * estadoNuevo( char * nombre, int tipo){
+Estado * estadoNuevo(char * nombre, int tipo){
 	if(!nombre ){
 		fprintf(stderr, "Error en los parámetros de estadoNuevo\n");
 		return NULL;
 	}
+
 	Estado * e = (Estado *) malloc (sizeof(Estado));
 	e->nombre = (char *) malloc(sizeof(char)*(strlen(nombre)+1));
 	strcpy(e->nombre, nombre);
 	e->tipo = tipo;
-	return e;
 	
+	return e;
 }
 
 
@@ -32,8 +33,8 @@ void estadoElimina(Estado * p_s){
 
 	if(p_s->nombre){
 		free(p_s->nombre);
-		p_s->nombre=NULL;
 	}
+	
 	free(p_s);
 
 	return ;
@@ -110,7 +111,6 @@ VectorIndices VectorIndicesNuevo(int tamano) {
 void VectorIndicesElimina(VectorIndices vi) {
 	if (vi == NULL) return;
 	free(vi);
-	vi = NULL;
 }
 
 

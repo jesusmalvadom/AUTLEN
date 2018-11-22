@@ -12,17 +12,17 @@
 #define MAX_LEN_NOMBRE 100
 
 typedef struct AFND {
-	char * nombre;
-	Alfabeto * alfabeto;
+	char* nombre;
+	Alfabeto* alfabeto;
 	int num_estados;
 	int num_estados_activos;
 	int num_simbolos;
 	
-	Estado ** estados;
-	Estado **estados_activos;
-	VectorIndices **transiciones;
-	int ** matriz_ltransiciones;
-	Palabra * cadena_actual; 
+	Estado** estados;
+	Estado** estados_activos;
+	VectorIndices** transiciones;
+	int** matriz_ltransiciones;
+	Palabra* cadena_actual; 
 
 
 }AFND;
@@ -61,8 +61,14 @@ void AFNDTransita(AFND * p_afnd);
 
 int AFNDGetEstadoIndice(AFND * p_afnd, char* nombre_estado);
 
-
 AFND * AFNDInsertaLTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombre_estado_f );
 
 AFND * AFNDCierraLTransicion (AFND * p_afnd);
+
+/*******************************************************************************/
+
+void addEstadosActivosLambda(AFND *p_afnd);
+
+void addEstadosActivos(AFND* p_afnd);
+
 #endif
