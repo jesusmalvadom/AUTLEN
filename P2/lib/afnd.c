@@ -494,3 +494,122 @@ void addEstadosActivos(AFND* p_afnd) {
 	l_estados_aux_tamano = 0;
 
 }
+
+
+
+AFND * AFND1ODeSimbolo( char * simbolo){
+	AFND * p_afnd1O;
+	char * nombre;
+	nombre = (char *)malloc((strlen(simbolo)+5) * sizeof(char));
+	sprintf(nombre, "anfd1O_simbolo-%s", simbolo);
+
+	p_afnd1O = AFNDNuevo(nombre, 2, 1);
+
+	AFNDInsertaSimbolo(p_afnd1O, simbolo);
+	
+	AFNDInsertaEstado(p_afnd1O,"qi",INICIAL);
+	AFNDInsertaEstado(p_afnd1O,"qf",FINAL);
+
+	AFNDInsertaTransicion(p_afnd1O, "qi", simbolo, "qf");
+
+	free(nombre);
+
+	return p_afnd1O;
+}
+
+AFND * AFND1ODeLambda(){
+	AFND * p_afnd1O;
+	p_afnd1O = AFNDNuevo("afnd1O_lambda", 2, 0);
+	
+	AFNDInsertaEstado(p_afnd1O,"qi",INICIAL);
+	AFNDInsertaEstado(p_afnd1O,"qf",FINAL);
+
+	AFNDInsertaLTransicion(p_afnd1O, "qi", "qf");
+	AFNDCierraLTransicion (p_afnd1O);
+
+	return p_afnd1O;
+}
+
+AFND * AFND1ODeVacio(){
+	AFND * p_afnd1O;
+	p_afnd1O = AFNDNuevo("afnd1O_vacio", 2, 0);
+	
+	AFNDInsertaEstado(p_afnd1O,"qi",INICIAL);
+	AFNDInsertaEstado(p_afnd1O,"qf",FINAL);
+
+	return p_afnd1O;
+}
+
+AFND * AFNDAAFND1O(AFND * p_afnd){
+	return NULL;
+}
+
+AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
+	return NULL;
+}
+
+AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2){
+	return NULL;
+}
+
+AFND * AFND1OEstrella(AFND * p_afnd_origen){
+	return NULL;
+}
+
+void AFNDADot(AFND * p_afnd){
+	FILE * f = NULL;
+	int i, j;
+	char * nombre;
+
+	/*CdE*/
+	if (!p_afnd){
+		printf("Automata erroneo\n");
+		return;
+	}
+
+	nombre = (char *)malloc((strlen(p_afnd->nombre) + 5) * sizeof(char));
+	strcpy(nombre, p_afnd->nombre);
+	strcat(nombre, ".dot");
+
+	f = fopen(nombre, "w");
+
+	fprintf(f, "digraph anfd1o_0_1_U_anfd1o_1_2  { rankdir=LR;\n\t_invisible [style= \"invis\"];\n");
+
+	/*Estados*/
+	for(i = 0; i < p_afnd->num_estados; i++){
+		if(p_afnd->estados[i]->tipo == INICIAL){
+			fprintf(f, "\t%s;\n", p_afnd->estados[i]->nombre);
+			fprintf(f, "\t_invisible -> %s;\n", p_afnd->estados[i]->nombre);
+		} else if(p_afnd->estados[i]->tipo == FINAL){
+			fprintf(f, "\t%s [penwidth=\"2\"];\n", p_afnd->estados[i]->nombre);
+		} else{
+			fprintf(f, "\t%s;\n", p_afnd->estados[i]->nombre);
+		}
+	}
+
+
+
+	// Transiciones
+	for (int i = 0; i < p_afnd->num_estados; i++) {
+		for(int j = 0; j < p_afnd->num_simbolos; j++) {
+			if (p_afnd->transiciones[i][j] != NULL) 
+				fprintf(f, "\t%s -> %s [label = \"%s\"];\n", p_afnd->estado[i]->nombre,p_afnd->estado[i]->tipo,p_afnd->transiciones[i]->simbolo);
+		}
+	}
+
+
+	/*Transiciones Lambda*/
+	for(i = 0; i < p_afnd->num_estados; i++){
+		//for(j = 0; j < p_afnd->num_estados; j++){
+			//if(i != j && p_afnd->matriz_DOT[i][j] == 1){
+				fprintf(f, "\t%s -> %s [label = \"&lambda;\"];\n", p_afnd->estados[i]->nombre, p_afnd->estados[j]->nombre);
+			//}
+		//}
+	}
+
+	
+	fprintf(f, "}");
+
+	fclose(f);
+	free(nombre);
+}

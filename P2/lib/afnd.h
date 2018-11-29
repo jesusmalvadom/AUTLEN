@@ -22,6 +22,7 @@ typedef struct AFND {
 	Estado** estados_activos;
 	VectorIndices** transiciones;
 	int** matriz_ltransiciones;
+	int** matriz_DOT;
 	Palabra* cadena_actual; 
 
 
@@ -61,6 +62,9 @@ void AFNDTransita(AFND * p_afnd);
 
 int AFNDGetEstadoIndice(AFND * p_afnd, char* nombre_estado);
 
+
+/**********PRACTICA 2**********/
+
 AFND * AFNDInsertaLTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombre_estado_f );
 
 AFND * AFNDCierraLTransicion (AFND * p_afnd);
@@ -70,5 +74,25 @@ AFND * AFNDCierraLTransicion (AFND * p_afnd);
 void addEstadosActivosLambda(AFND *p_afnd);
 
 void addEstadosActivos(AFND* p_afnd);
+
+
+/**********PRACTICA 3**********/
+
+AFND * AFND1ODeSimbolo( char * simbolo);
+
+AFND * AFND1ODeLambda();
+
+AFND * AFND1ODeVacio();
+
+AFND * AFNDAAFND1O(AFND * p_afnd);
+
+AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2);
+
+AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2);
+
+AFND * AFND1OEstrella(AFND * p_afnd_origen);
+
+void AFNDADot(AFND * p_afnd);
+
 
 #endif
