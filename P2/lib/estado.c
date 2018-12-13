@@ -92,6 +92,29 @@ int estadoTipo(Estado * p_s){
 	return p_s->tipo;
 }
 
+/* Devuelve el tipo pasado como argumento en formato cadena de caracteres */
+char * nombreTipo(int tipo) {
+	char *nombre;
+	switch (tipo) {
+
+		case INICIAL:
+			nombre = strdup("INICIAL");
+			break;
+		case FINAL:
+			nombre = strdup("FINAL");
+			break;
+		case INICIAL_Y_FINAL:
+			nombre = strdup("INICIAL_Y_FINAL");
+			break;
+		case NORMAL:
+			nombre = strdup("NORMAL");
+			break;
+		default:
+			return NULL;
+	}
+	return nombre;
+}
+
 /****************************************************************************/
 /****************************************************************************/
 /**************************** VectorIndices *********************************/

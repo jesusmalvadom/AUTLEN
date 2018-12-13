@@ -22,9 +22,8 @@ typedef struct AFND {
 	Estado** estados_activos;
 	VectorIndices** transiciones;
 	int** matriz_ltransiciones;
-	int** matriz_DOT;
+	//int** matriz_DOT;
 	Palabra* cadena_actual; 
-
 
 }AFND;
 
@@ -93,6 +92,8 @@ AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2);
 AFND * AFND1OEstrella(AFND * p_afnd_origen);
 
 void AFNDADot(AFND * p_afnd);
+
+int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[], char *nombre_qi, char *nombre_qf);
 
 
 #endif

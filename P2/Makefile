@@ -72,9 +72,6 @@ afnd-test: afnd
 
 .PHONY : clean all
 clean :
-	@rm -rf $(TESTING)pruebas_$(ALFABETO)/*.o
-	@rm -rf $(TESTING)pruebas_$(ESTADO)/*.o
-	@rm -rf $(TESTING)pruebas_$(PALABRA)/*.o
 	@rm -rf $(OBJ_FOLDER)
 	@rm -rf pruebas_*
 

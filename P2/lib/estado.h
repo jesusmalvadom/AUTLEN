@@ -49,6 +49,9 @@ char * estadoNombre(Estado * p_s);
 /*devuelve el tipo del estado argumento */
 int estadoTipo(Estado * p_s);
 
+/* Devuelve el tipo pasado como argumento en formato cadena de caracteres */
+char *nombreTipo(int tipo);
+
 
 /****************************************************************************/
 /****************************************************************************/

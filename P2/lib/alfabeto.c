@@ -43,6 +43,12 @@ void alfabetoElimina(Alfabeto * p_alfabeto) {
 */
 Alfabeto * alfabetoInsertaSimbolo(Alfabeto * p_alfabeto, char * simbolo) {
 	if (p_alfabeto == NULL || simbolo == NULL) return NULL;
+
+	/* Comprobamos que el simbolo no esta ya en el alfabeto */
+	for (int i=0; i<p_alfabeto->n_simbolos; i++) {
+		if (strcmp(p_alfabeto->simbolos[i], simbolo) == 0) return p_alfabeto;
+	}
+
 	p_alfabeto->simbolos[p_alfabeto->n_simbolos] = strcpy(p_alfabeto->simbolos[p_alfabeto->n_simbolos], simbolo);
 	p_alfabeto->n_simbolos++;
 	return p_alfabeto;
