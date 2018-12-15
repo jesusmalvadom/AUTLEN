@@ -810,23 +810,30 @@ AFND * AFND1OEstrella(AFND * p_afnd_origen){
 		AFNDInsertaSimbolo(p_afnd1O, alfabetoSimboloEn(p_afnd_origen->alfabeto, i));
 	}
 
+	printf("\t1\n");
+
 	/* Insertamos el estado inicial del AFND1O */
 	sprintf(nombre_qi, "X_qi");
 	AFNDInsertaEstado(p_afnd1O, nombre_qi, INICIAL);
 
+	printf("\t2\n");
 	/* Insertamos los estados del AFND en el AFND1O */
 	for (int i=0; i<p_afnd_origen->num_estados; i++) {
 		sprintf(nombre_estado, "%s%s", prefix, estadoNombre(p_afnd_origen->estados[i]));
 		AFNDInsertaEstado(p_afnd1O, estadoNombre(p_afnd_origen->estados[i]), NORMAL);
 	}
 
+	printf("\t3\n");
 	/* Anyadimos el estado final del AFND1O */
 	sprintf(nombre_qf, "X_qf");
 	AFNDInsertaEstado(p_afnd1O, nombre_qf, FINAL);
 
+	printf("\t\t3.1\n");
+
 	/* Anyadimos todas las transiciones del AFND al AFND1O */
 	insertarTransiciones(p_afnd_origen, p_afnd1O, prefix, nombre_qi, nombre_qf);
 
+	printf("\t4\n");
 
 	/* Unimos los estados finales del AFND con el nuevo estado final (igual con el estado inicial) */
 	for (int i=0; i<p_afnd_origen->num_estados; i++) {
@@ -844,6 +851,7 @@ AFND * AFND1OEstrella(AFND * p_afnd_origen){
 		}
 	}
 
+	printf("\t5\n");
 
 	/* Una lambda del estado inicial al final */
 	AFNDInsertaLTransicion(p_afnd1O, nombre_qi, nombre_qf);
@@ -916,16 +924,21 @@ void AFNDADot(AFND * p_afnd){
 int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[], char *nombre_qi, char *nombre_qf) {
 
 	/* Anyadimos todas las transiciones del AFND1O_1 al AFND1O */
+	printf("ENTRAMOS\n");
 	for (int i=0; i<p_afnd_origen->num_estados; i++) {
 		char * nombreEstadoI = (char *) malloc(strlen(estadoNombre(p_afnd_origen->estados[i])) + strlen(prefix) + 1);
 		sprintf(nombreEstadoI, "%s%s", prefix, estadoNombre(p_afnd_origen->estados[i]));
+		printf("EstadoI: %s\n", nombreEstadoI);
 
 		for (int j=0; j<p_afnd_origen->num_simbolos; j++) {
 			char * nombreSimbolo = alfabetoSimboloEn(p_afnd_origen->alfabeto, j);
+			printf("\tnombreSimbolo: %s\n", nombreSimbolo);
 
 			for (int k=0; k<p_afnd_origen->num_estados; k++) {
 				char * nombreEstadoF = (char *) malloc(strlen(estadoNombre(p_afnd_origen->estados[k])) + strlen(prefix) + 1);
 				sprintf(nombreEstadoF, "%s%s", prefix, estadoNombre(p_afnd_origen->estados[k]));
+
+				printf("\t\tnombreEstadoF: %s\n", nombreEstadoF);
 
 				/* Transiciones Lambda del AFND al AFND1O */
 				if (p_afnd_origen->matriz_ltransiciones[i][k] == 1) {
@@ -938,6 +951,7 @@ int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[
 				}
 
 				free(nombreEstadoF);
+
 			}
 		}
 
