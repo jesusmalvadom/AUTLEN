@@ -585,7 +585,7 @@ AFND * AFNDAAFND1O(AFND * p_afnd){
 
 AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	AFND *p_afnd1O;
-	char *nombre = (char *)malloc((strlen("(<-U->)") + strlen(p_afnd1O_1->nombre) + strlen(p_afnd1O_2->nombre) + 1) * sizeof(char));
+	char *nombre = (char *)malloc((strlen("__U__") + strlen(p_afnd1O_1->nombre) + strlen(p_afnd1O_2->nombre) + 1) * sizeof(char));
 	char *nombre_qi = (char *)malloc((strlen("qi") + 1) * sizeof(char));
 	char *nombre_qf = (char *)malloc((strlen("qf") + 1) * sizeof(char));
 	char *nombre_estado = (char *)malloc((MAX_LEN_NOMBRE + 1) * sizeof(char));
@@ -594,7 +594,7 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	int num_simbolos = p_afnd1O_1->num_simbolos;
 
 	/* Construimos el nombre del AFND1O y creamos el autómata */
-	sprintf(nombre, "(%s<-U->%s)", p_afnd1O_1->nombre, p_afnd1O_2->nombre);
+	sprintf(nombre, "_%s_U_%s_", p_afnd1O_1->nombre, p_afnd1O_2->nombre);
 
 	for (int i=0; i<p_afnd1O_2->num_simbolos; i++) {
 		for (int j=0; j<p_afnd1O_1->num_simbolos; j++) {
@@ -683,7 +683,7 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 
 AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2) {
 	AFND *p_afnd1O;
-	char *nombre = (char *)malloc((strlen("(<-K->)") + strlen(p_afnd_origen1->nombre) + strlen(p_afnd_origen2->nombre) + 1) * sizeof(char));
+	char *nombre = (char *)malloc((strlen("__K__)") + strlen(p_afnd_origen1->nombre) + strlen(p_afnd_origen2->nombre) + 1) * sizeof(char));
 	char *nombre_qi = (char *)malloc((strlen("qi") + 1) * sizeof(char));
 	char *nombre_qf = (char *)malloc((strlen("qf") + 1) * sizeof(char));
 	char *nombre_estado = (char *)malloc((MAX_LEN_NOMBRE + 1) * sizeof(char));
@@ -693,7 +693,7 @@ AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2) {
 	int num_simbolos = p_afnd_origen1->num_simbolos;
 
 	/* Construimos el nombre del AFND1O y creamos el autómata */
-	sprintf(nombre, "(%s<-K->%s)", p_afnd_origen1->nombre, p_afnd_origen2->nombre);
+	sprintf(nombre, "_%s_K_%s_", p_afnd_origen1->nombre, p_afnd_origen2->nombre);
 
 	for (int i=0; i<p_afnd_origen2->num_simbolos; i++) {
 		for (int j=0; j<p_afnd_origen1->num_simbolos; j++) {
@@ -796,14 +796,14 @@ AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2) {
 
 AFND * AFND1OEstrella(AFND * p_afnd_origen){
 	AFND *p_afnd1O;
-	char *nombre = (char *)malloc((strlen("()*") + strlen(p_afnd_origen->nombre) + 1) * sizeof(char));
+	char *nombre = (char *)malloc((strlen("__X") + strlen(p_afnd_origen->nombre) + 1) * sizeof(char));
 	char *nombre_qi = (char *)malloc((strlen("qi") + 1) * sizeof(char));
 	char *nombre_qf = (char *)malloc((strlen("qf") + 1) * sizeof(char));
 	char *nombre_estado = (char *)malloc((MAX_LEN_NOMBRE + 1) * sizeof(char));
 	char *prefix = "X_";
 
 	/* Construimos el nombre del AFND1O y creamos el autómata */
-	sprintf(nombre, "(%s)*", p_afnd_origen->nombre);
+	sprintf(nombre, "_%s_X", p_afnd_origen->nombre);
 	p_afnd1O = AFNDNuevo(nombre, p_afnd_origen->num_estados + 2, p_afnd_origen->num_simbolos);
 
 	/* Anyadimos los simbolos en el AFND1O */

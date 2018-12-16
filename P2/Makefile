@@ -69,12 +69,12 @@ afnd-test: afnd
 	@echo Compilando tester del modulo del AFND...
 	@$(CC) -o pruebas_$(AFND) $(LIBRARIES)$(AFND)-test.c $(OBJ_FOLDER)$(AFND).a
 
-
 .PHONY : clean all
 clean :
 	@rm -rf $(OBJ_FOLDER)
 	@rm -rf pruebas_*
-	@rm *.dot
+	@rm -rf DOTS
+
 
 
 
