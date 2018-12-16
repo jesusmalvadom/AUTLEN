@@ -74,6 +74,7 @@ afnd-test: afnd
 clean :
 	@rm -rf $(OBJ_FOLDER)
 	@rm -rf pruebas_*
+	@rm *.dot
 
 
 

@@ -93,7 +93,7 @@ AFND * AFND1OEstrella(AFND * p_afnd_origen);
 
 void AFNDADot(AFND * p_afnd);
 
-int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[], char *nombre_qi, char *nombre_qf);
+int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[]);
 
 
 #endif
