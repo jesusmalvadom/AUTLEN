@@ -95,5 +95,9 @@ void AFNDADot(AFND * p_afnd);
 
 int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[]);
 
+int contarSimbolos(AFND *p_afnd_origen1, AFND *p_afnd_origen2);
+
+void unirAlfabetos(AFND *p_afnd_destino, AFND *p_afnd_origen1, AFND *p_afnd_origen2);
+
 
 #endif

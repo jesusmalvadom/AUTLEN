@@ -591,31 +591,14 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	char *nombre_estado = (char *)malloc((MAX_LEN_NOMBRE + 1) * sizeof(char));
 	char *prefix_1 = "U1_";
 	char *prefix_2 = "U2_";
-	int num_simbolos = p_afnd1O_1->num_simbolos;
+	int num_simbolos = contarSimbolos(p_afnd1O_1, p_afnd1O_2);
 
 	/* Construimos el nombre del AFND1O y creamos el autómata */
 	sprintf(nombre, "_%s_U_%s_", p_afnd1O_1->nombre, p_afnd1O_2->nombre);
-
-	for (int i=0; i<p_afnd1O_2->num_simbolos; i++) {
-		for (int j=0; j<p_afnd1O_1->num_simbolos; j++) {
-			if (strcmp(alfabetoSimboloEn(p_afnd1O_2->alfabeto, i), alfabetoSimboloEn(p_afnd1O_1->alfabeto, j)) == 0) {
-				break;
-			}
-			num_simbolos++;
-		}
-	}
-
 	p_afnd1O = AFNDNuevo(nombre, p_afnd1O_1->num_estados + p_afnd1O_2->num_estados + 2, num_simbolos);
 
-	/* Anyadimos los simbolos del AFND_1 en el AFND1O */
-	for (int i=0; i<p_afnd1O_1->num_simbolos; i++){
-		AFNDInsertaSimbolo(p_afnd1O, alfabetoSimboloEn(p_afnd1O_1->alfabeto, i));
-	}
-
-	/* Anyadimos los simbolos del AFND_2 en el AFND1O */
-	for (int i=0; i<p_afnd1O_2->num_simbolos; i++){
-		AFNDInsertaSimbolo(p_afnd1O, alfabetoSimboloEn(p_afnd1O_2->alfabeto, i));
-	}
+	/* Unimos los alfabetos en uno solo */
+	unirAlfabetos(p_afnd1O, p_afnd1O_1, p_afnd1O_2);
 
 	/* Insertamos el estado inicial del AFND1O */
 	sprintf(nombre_qi, "qi");
@@ -640,8 +623,7 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	/* Insertamos las transiciones de ambos AFND al nuevo AFND1O */
 	insertarTransiciones(p_afnd1O_1, p_afnd1O, prefix_1);
 	insertarTransiciones(p_afnd1O_2, p_afnd1O, prefix_2);
-
-
+	
 	/* Unimos los estados finales del AFND1O_1 con el nuevo estado final (igual con el estado inicial) */
 	for (int i=0; i<p_afnd1O_1->num_estados; i++) {
 		char * nombreEstadoI = (char *) malloc(strlen(estadoNombre(p_afnd1O_1->estados[i])) + strlen(prefix_1) + 1);
@@ -690,31 +672,15 @@ AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2) {
 
 	char *prefix_1 = "K1_";
 	char *prefix_2 = "K2_";
-	int num_simbolos = p_afnd_origen1->num_simbolos;
 
 	/* Construimos el nombre del AFND1O y creamos el autómata */
 	sprintf(nombre, "_%s_K_%s_", p_afnd_origen1->nombre, p_afnd_origen2->nombre);
 
-	for (int i=0; i<p_afnd_origen2->num_simbolos; i++) {
-		for (int j=0; j<p_afnd_origen1->num_simbolos; j++) {
-			if (strcmp(alfabetoSimboloEn(p_afnd_origen2->alfabeto, i), alfabetoSimboloEn(p_afnd_origen1->alfabeto, j)) == 0) {
-				break;
-			}
-			num_simbolos++;
-		}
-	}
-
+	int num_simbolos = contarSimbolos(p_afnd_origen1, p_afnd_origen2);
 	p_afnd1O = AFNDNuevo(nombre, p_afnd_origen1->num_estados + p_afnd_origen2->num_estados + 2, num_simbolos);
 
-	/* Anyadimos los simbolos del AFND_1 en el AFND1O */
-	for (int i=0; i<p_afnd_origen1->num_simbolos; i++){
-		AFNDInsertaSimbolo(p_afnd1O, alfabetoSimboloEn(p_afnd_origen1->alfabeto, i));
-	}
-
-	/* Anyadimos los simbolos del AFND_2 en el AFND1O */
-	for (int i=0; i<p_afnd_origen2->num_simbolos; i++){
-		AFNDInsertaSimbolo(p_afnd1O, alfabetoSimboloEn(p_afnd_origen2->alfabeto, i));
-	}
+	/* Unimos los alfabetos en uno solo */
+	unirAlfabetos(p_afnd1O, p_afnd_origen1, p_afnd_origen2);
 
 	/* Insertamos el estado inicial del AFND1O */
 	sprintf(nombre_qi, "qi");
@@ -944,7 +910,7 @@ int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[
 					AFNDInsertaTransicion(p_afnd_destino, nombreEstadoI, nombreSimbolo, nombreEstadoF);
 				}
 
-				free(nombreEstadoF);
+				free(nombreEstadoF);;
 
 			}
 
@@ -952,9 +918,51 @@ int insertarTransiciones(AFND *p_afnd_origen, AFND *p_afnd_destino, char prefix[
 		}
 
 		free(nombreEstadoI);
+
 	}
 
 	return 1;
+}
+
+int contarSimbolos(AFND *p_afnd_origen1, AFND *p_afnd_origen2) {
+	int num_simbolos = p_afnd_origen1->num_simbolos;
+	int i, j;
+	int flag = 0;
+
+	for (i=0; i<p_afnd_origen2->num_simbolos; i++) {
+		flag = 1;
+		for (j=0; j<p_afnd_origen1->num_simbolos; j++) {
+			if (strcmp(alfabetoSimboloEn(p_afnd_origen2->alfabeto, i), alfabetoSimboloEn(p_afnd_origen1->alfabeto, j)) == 0) {
+				flag = 0;
+			}
+		}
+		if (flag == 1) num_simbolos++;
+	}
+
+	return num_simbolos;
+}
+
+void unirAlfabetos(AFND *p_afnd_destino, AFND *p_afnd_origen1, AFND *p_afnd_origen2) {
+	int i, j, flag;
+
+	/* Anyadimos los simbolos del AFND_1 en el AFND_dest */
+	for (i=0; i<p_afnd_origen1->num_simbolos; i++){
+		AFNDInsertaSimbolo(p_afnd_destino, alfabetoSimboloEn(p_afnd_origen1->alfabeto, i));
+	}
+
+	for (i=0; i<p_afnd_origen2->num_simbolos; i++) {
+		flag = 1;
+
+		for (j=0; j<p_afnd_origen1->num_simbolos; j++) {
+			if (strcmp(alfabetoSimboloEn(p_afnd_origen2->alfabeto, i), alfabetoSimboloEn(p_afnd_origen1->alfabeto, j)) == 0) {
+				flag = 0;
+			}
+		}
+
+		if (flag == 1) {
+			AFNDInsertaSimbolo(p_afnd_destino, alfabetoSimboloEn(p_afnd_origen2->alfabeto, i));
+		}
+	}
 }
 
 
